@@ -1,0 +1,21 @@
+########## criar tabela ###########
+create table estabelecimento (
+id int(11)  NOT NULL AUTO_INCREMENT,
+primary key(id),
+Razao_social  varchar(255) ,
+Nome_Fantasia  varchar(255) ,
+CNPJ  varchar(18),
+Email  varchar(255) ,
+Endereco  varchar(255) ,
+Cidade  varchar(255),
+Estado  varchar(2),
+Telefone  varchar(255),
+Categoria  varchar(255),
+Status  varchar(10),
+Agencia  varchar(255),
+conta  varchar(255),
+Data_Cadastro timestamp(6)
+)
+
+########## criar índice ###########
+ALTER TABLE estabelecimento ADD INDEX(`id`)

@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <title>Projeto Empresas</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script src="js/formulario.js"></script>
+ <link href="css/estilos.css" rel="stylesheet">
+</head>
+<script type="text/javascript" >
+        $(document).ready(function() {
+
+            function limpa_formulário_cep() {
+                // Limpa valores do formulário de cep.
+                $("#endereco").val("");
+                $("#bairro").val("");
+                $("#cidade").val("");
+                $("#uf").val("");
+                $("#ibge").val("");
+            }
+            
+            //Quando o campo cep perde o foco.
+            $("#cep").blur(function() {
+
+                //Nova variável "cep" somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if(validacep.test(cep)) {
+
+                        //Preenche os campos com "..." enquanto consulta webservice.
+                        $("#endereco").val("...");
+                        $("#bairro").val("...");
+                        $("#cidade").val("...");
+                        $("#uf").val("...");
+                        $("#ibge").val("...");
+
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                            if (!("erro" in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $("#endereco").val(dados.logradouro);
+                                $("#bairro").val(dados.bairro);
+                                $("#cidade").val(dados.localidade);
+                                $("#uf").val(dados.uf);
+                                $("#ibge").val(dados.ibge);
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                alert("CEP não encontrado.");
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        alert("Formato de CEP inválido.");
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+            });
+        });
+		
+
+    </script>
+
+
+
+<body>
+
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+   <div class="teste">
+    <div class="navbar-header">
+	
+      <a class="navbar-brand" > <img src="imagens/FitCard.png" width="150" height="120" class="img-responsive pull-right">
+	  
+    </div></div>
+    <ul class="nav navbar-nav">
+     
+      <li><a href="index.html">CADASTRO</a></li>
+      <li><a href="consulta.php">CONSULTA</a></li>
+	  <li></li>
+	  
+    </ul>
+	
+  </div>
+</nav>
+  <div class="SegundoHeader">
+  <div class="container text-center">
+    <h1>Bem vindo</h1>      
+    <p>ao portal Empresas</p>
+  </div>
+</div>  
+	<!-- Dados do fomulário 1 ( cadastro ) -->
+	
+	<div class="main">
+      <h3>Preencha os dados abaixo</h3>
+      <form name="form1" action="Cadastro.php" method ='POST' enctype="multipart/form-data" onsubmit="return valida_form(this)">
+	  
+    <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Razão Social</label>
+      <input type="text" class="form-control" name="RazaoSocial" id="RazaoSocial" placeholder="Razão Social">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="inputPassword4">Nome Fantasia</label>
+      <input type="text" class="form-control" name="NomeFantasia" placeholder="Nome fantasia">
+    </div>
+	<div class="form-group col-md-3">
+      <label for="inputPassword4">CNPJ</label>
+      <input type="text" class="form-control" onblur="validarCNPJ(this)" onkeypress="MascaraCNPJ(this, '##.###.###/####-##')" name="Cnpj" id="Cnpj" maxlength="18" placeholder="00.000.000/0000-00">
+    </div>
+	
+  </div>
+  
+  <div class="form-group">
+  <div class="form-group col-md-3">
+    <label for="inputAddress">Dígite o CEP para localizar o endereço</label>
+    <input type="text" class="form-control" name="cep" id="cep" maxlength="9" onkeypress="MascaraCEP(this, '#####-###')" placeholder="00000000">
+  </div>
+  <div class="form-group col-md-6">
+    <label for="inputAddress">Endereço</label>
+    <input type="text" class="form-control" name="endereco" id="endereco" placeholder="Nome da rua">
+  </div>
+  <div class="form-group col-md-1">
+    <label for="inputAddress">Número</label>
+    <input type="text" class="form-control" name="numero" id="numero">
+  </div>
+  <div class="form-group col-md-2">
+    <label for="inputAddress">Bairro</label>
+    <input type="text" class="form-control" name="bairro" id="bairro">
+  </div>
+  </div>
+  <div class="form-group">
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="inputCity">Cidade</label>
+      <input type="text" id="cidade" class="form-control" name="Cidade">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="inputCity">Estado</label>
+      <input type="text" id="uf" class="form-control" name="Estado">
+    </div>
+  </div>
+  <div class="form-group">
+  <div class="form-group col-md-6">
+    <label for="inputAddress">E-mail</label>
+    <input type="email" class="form-control" id="Email" name="Email" onblur="validacaoEmail()" placeholder="email@provedor.com.br">
+  </div>
+  <div class="form-group col-md-3">
+    <label for="inputAddress">Telefone</label>
+    <input type="text" name="Telefone" id="Telefone" onkeypress="mascara(this, '## #####-####')" maxlength="13" class="form-control">
+  </div>
+   <div class="form-group col-md-3">
+      <label for="inputEstado">Categoria</label>
+      <select name="Categoria" id="Categoria" class="form-control">
+        <option selected>Supermercado</option>
+		 <option>Restaurante</option>
+		  <option>Borracharia</option>
+		   <option>Posto</option>
+		    <option>Oficina</option>
+			 
+      </select>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <div class="form-group col-md-2">
+    <label for="inputAddress">Conta Bancária</label>
+    <input type="text" class="form-control" name="Conta" onkeypress="mascaraConta(this, '##.###-#')" maxlength="8" placeholder="Conta">
+  </div>
+  <div class="form-group col-md-2">
+    <label for="inputAddress">Agência</label>
+    <input type="text" class="form-control" name="Agencia" onkeypress="mascaraAgencia(this, '###-#')" maxlength="5" placeholder="Agência">
+  </div>
+ 
+  
+    <div class="form-group col-md-2">
+      <label for="inputEstado">Status</label>
+      <select name="status" class="form-control">
+        <option selected>Ativo</option>
+		 <option>Inativo</option>
+
+			 
+      </select>
+    </div></div>
+  
+  <button type="submit" class="btn btn-primary">Cadastrar</button>
+	 </form> 
+    
+  </div>  
+  
+  
+  
+    
+
+	
+	
+	
+	
+	
+	
+    
+ 
+
+<footer class="container-fluid_rodape text-center">
+<p>Copyright Fabio Siqueira ©</p>
+</footer>
+
+</body>
+</html>
